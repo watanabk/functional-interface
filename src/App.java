@@ -39,11 +39,20 @@ public class App {
         write.accept("multiply.andThen(add)(5): "+multiply.andThen(add).apply(5));
         write.accept("addThenMultiply(5): "+addThenMultiply.apply(5));
 
-        // @FunctionalInterface
+        // 独自関数型インターフェース（静的メソッド実行）
         exec(() -> testMethodB());
         exec(() -> testMethodA());
+
+        // 独自関数型インターフェース（三項演算ラッパー）
+        TriFunction<Boolean, String, String, String> lambda 
+            = (condition, o1, o2) -> condition ? o1 : o2;
+        write.accept(lambda.apply(true, "o", "x"));
+        write.accept(lambda.apply(false, "o", "x"));
     }
 
+    /**
+     * Exception をスローする 関数型インターフェースを受け取り execute する静的メソッド
+     */
     public static void exec(Funcs<Exception> f) throws Exception {
         f.execute();
     }
@@ -57,9 +66,22 @@ public class App {
         write.accept("testMethodB");
     }
 
+    /**
+     * Exception をスローする 関数型インターフェース
+     * 
+     * @param <E>
+     */
     @FunctionalInterface
     public interface Funcs<E extends Exception> {
         void execute() throws E;
+    }
+
+    /**
+     * 3つの引数を受け取る関数型インターフェース
+     */
+    @FunctionalInterface
+    public interface TriFunction<T, S, U, R>{
+        R apply(T contition, S o1, U o2);
     }
 
 }
