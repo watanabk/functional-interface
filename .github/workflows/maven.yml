@@ -36,10 +36,7 @@ jobs:
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v4
 
-    # upload to artifact
-    
-    - name: Upload WAR
-      uses: actions/upload-artifact@v4
-      with:
-        name: war-file
-        path: target/*.war
+    # Deploy to Tomcat
+    - name: Deploy to Tomcat
+      run: 
+        curl -u ${{ secrets.TOMCAT_USER }}:${{ secrets.TOMCAT_PASS }} -T target/*.war "http://${{ secrets.TOMCAT_HOST }}/manager/text/deploy?path=/app&update=true"
