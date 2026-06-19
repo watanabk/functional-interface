@@ -37,6 +37,7 @@ jobs:
       uses: advanced-security/maven-dependency-submission-action@v4
 
     # upload to artifact
+    
     - name: Upload WAR
       uses: actions/upload-artifact@v4
       with:
