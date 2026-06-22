@@ -36,10 +36,6 @@ jobs:
 #    - name: Update dependency graph
 #      uses: advanced-security/maven-dependency-submission-action@v4
 
-    # Deploy to Tomcat
-#    - name: Deploy to Tomcat
-#      run: curl -u ${{ secrets.TOMCAT_USER }}:${{ secrets.TOMCAT_PASS }} -T target/*.war "http://${{ secrets.TOMCAT_HOST }}/manager/text/deploy?path=/app&update=true"
-
     # ② Tomcatに直接デプロイ（ローカル）
     - name: Deploy to Tomcat
       env:
@@ -48,4 +44,5 @@ jobs:
       run: |
         $war = Get-ChildItem target\*.war | Sort-Object LastWriteTime -Descending | Select-Object -First 1
         Write-Output "Deploying: $($war.FullName)"
-        curl.exe -u "$env:TOMCAT_USER`:$env:TOMCAT_PASS" -T "$($war.FullName)" "http://localhost:8080/manager/text/deploy?path=/app&update=true"
+        $appName = [System.IO.Path]::GetFileNameWithoutExtension($war.Name)
+        curl.exe -u "$env:TOMCAT_USER`:$env:TOMCAT_PASS" -T "$($war.FullName)" "http://localhost:8080/manager/text/deploy?path=/$appName&update=true"
