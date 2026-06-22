@@ -43,8 +43,8 @@ jobs:
     - name: Copy WAR
       uses: appleboy/scp-action@v0.1.7
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USER }}
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_KEY }}
         source: "target/*.war"
         target: "F:/tomcat/deploy/"
