@@ -53,4 +53,3 @@ jobs:
         & curl.exe -u "$env:TOMCAT_USER`:$env:TOMCAT_PASS" `
           -T "$($war.FullName)" `
           "http://localhost:8080/manager/text/deploy?path=/app&update=true"
-        "
