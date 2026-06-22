@@ -40,7 +40,6 @@ jobs:
 #    - name: Deploy to Tomcat
 #      run: curl -u ${{ secrets.TOMCAT_USER }}:${{ secrets.TOMCAT_PASS }} -T target/*.war "http://${{ secrets.TOMCAT_HOST }}/manager/text/deploy?path=/app&update=true"
 
-
     # ② Tomcatに直接デプロイ（ローカル）
     - name: Deploy to Tomcat
       env:
