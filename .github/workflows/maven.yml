@@ -47,11 +47,10 @@ jobs:
         TOMCAT_USER: ${{ secrets.TOMCAT_USER }}
         TOMCAT_PASS: ${{ secrets.TOMCAT_PASS }}
       run: |
-        powershell -Command "
-          $war = Get-ChildItem target\*.war | Select-Object -First 1;
-          Write-Host 'Deploying:' $war.FullName;
+        $war = Get-ChildItem target\*.war | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+        Write-Output "Deploying: $($war.FullName)"
 
-          curl.exe -u $env:TOMCAT_USER`:$env:TOMCAT_PASS `
-            -T $war.FullName `
-            'http://localhost:8080/manager/text/deploy?path=/app&update=true';
+        & curl.exe -u "$env:TOMCAT_USER`:$env:TOMCAT_PASS" `
+          -T "$($war.FullName)" `
+          "http://localhost:8080/manager/text/deploy?path=/app&update=true"
         "
