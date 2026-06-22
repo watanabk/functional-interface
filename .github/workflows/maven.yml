@@ -59,7 +59,7 @@ jobs:
           powershell -Command "
             cd F:/tomcat/deploy;
             $war = Get-ChildItem *.war | Select-Object -First 1;
-            curl.exe -u deploy:password -T $war.FullName 'http://localhost:8080/manager/text/deploy?path=/app&update=true';
+            curl.exe -u { secrets.TOMCAT_USER }}:${{ secrets.TOMCAT_PASS }} -T $war.FullName 'http://localhost:8080/manager/text/deploy?path=/app&update=true';
             # デプロイ後削除
             Remove-Item $war.FullName -Force
           "
