@@ -19,7 +19,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, windows]
 
     steps:
     - uses: actions/checkout@v4
@@ -40,27 +40,18 @@ jobs:
 #    - name: Deploy to Tomcat
 #      run: curl -u ${{ secrets.TOMCAT_USER }}:${{ secrets.TOMCAT_PASS }} -T target/*.war "http://${{ secrets.TOMCAT_HOST }}/manager/text/deploy?path=/app&update=true"
 
-    - name: Copy WAR
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_KEY }}
-        source: "target/*.war"
-        target: "F:/tomcat/deploy/"
 
-    - name: Deploy directly via SSH
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_KEY }}
-        script: |
-          powershell -Command "
-            cd F:/tomcat/deploy;
-            $war = Get-ChildItem *.war | Select-Object -First 1;
-            curl.exe -u { secrets.TOMCAT_USER }}:${{ secrets.TOMCAT_PASS }} -T $war.FullName 'http://localhost:8080/manager/text/deploy?path=/app&update=true';
-            # デプロイ後削除
-            Remove-Item $war.FullName -Force
-          "
+    # ② Tomcatに直接デプロイ（ローカル）
+    - name: Deploy to Tomcat
+      env:
+        TOMCAT_USER: ${{ secrets.TOMCAT_USER }}
+        TOMCAT_PASS: ${{ secrets.TOMCAT_PASS }}
+      run: |
+        powershell -Command "
+          $war = Get-ChildItem target\*.war | Select-Object -First 1;
+          Write-Host 'Deploying:' $war.FullName;
 
+          curl.exe -u $env:TOMCAT_USER`:$env:TOMCAT_PASS `
+            -T $war.FullName `
+            'http://localhost:8080/manager/text/deploy?path=/app&update=true';
+        "
